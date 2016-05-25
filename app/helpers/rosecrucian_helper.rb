@@ -1,0 +1,2 @@
+module RosecrucianHelper
+end

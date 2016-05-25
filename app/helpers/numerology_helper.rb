@@ -1,0 +1,2 @@
+module NumerologyHelper
+end
