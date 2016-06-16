@@ -1,16 +1,26 @@
-module RosecrucianHelper
+class Rosecrucian 
+  include ActiveModel::Model
+  attr_accessor :month, :day, :year
 
-  def periods(m, d, y)
+  VALID_MONTHDAY_REGEX = /[0-9]{2}/
+  VALID_YEAR_REGEX = /[0-9]{4}/
+
+  validates :month, presence: true, length: { is: 2 },
+                    format: { with: VALID_MONTHDAY_REGEX }
+  validates :day, presence: true, length: { is: 2 },
+                    format: { with: VALID_MONTHDAY_REGEX }
+  validates :year, presence: true, length: { is: 4 },
+                    format: { with: VALID_YEAR_REGEX }
+
+  def self.periods(yr, mnth, dy)
 
     require 'date'
 
-    startdate = Date.new(y.chomp.to_i, m.chomp.to_i, d.chomp.to_i)
+    startdate = Date.new(yr.to_i, mnth.to_i, dy.to_i)
     return(periods_from(startdate))
   end
 
-private
-
-  def has_leapday?(time_pt)
+  def self.has_leapday?(time_pt)
     # Takes a date as input, determines if there is a leap day included
     # in the ensuing 52 day period, and if there is, returns true. Else false.
     #
@@ -28,17 +38,16 @@ private
     end
   end
 
-  def periods_from(this_pt_in_time)
+  def self.periods_from(this_pt_in_time)
     # Takes a date as input, divides the ensuing year into 7 equal parts
     # and prints to standard out the list of start and end dates of each.
 
-    this = ["Zeroth", "First", "Second", "Third", "Fourth", "Fifth",
-            "Sixth", "Seventh"]
-
+    thelist = {}
+    therange = ""
     period = 1
-    thelist = ""
+
     until period > 7 do
-      thelist << "#{this[period]} period:\t#{this_pt_in_time} - "
+      therange = "#{this_pt_in_time} - "
       if period == 7
         this_pt_in_time += 52
       else
@@ -47,7 +56,8 @@ private
       if has_leapday?(this_pt_in_time)
         this_pt_in_time += 1
       end
-      thelist << "#{this_pt_in_time}.\n"
+      therange << "#{this_pt_in_time}"
+      thelist["#{period}"] = therange
       period += 1
       this_pt_in_time += 1
     end
