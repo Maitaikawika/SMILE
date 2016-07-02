@@ -1,24 +1,41 @@
 class Rosecrucian 
   include ActiveModel::Model
-  attr_accessor :month, :day, :year
+  attr_accessor :birth_month, :birth_day, :month, :day, :year, :length
 
-  VALID_MONTHDAY_REGEX = /[0-9]{2}/
+  VALID_NAME_REGEX = /\A[a-zA-Z\s]+\z/
+  VALID_MONTHDAY_REGEX = /\A([1-9]|1[0-2])\z/
   VALID_YEAR_REGEX = /[0-9]{4}/
 
-  validates :month, presence: true, length: { is: 2 },
-                    format: { with: VALID_MONTHDAY_REGEX }
-  validates :day, presence: true, length: { is: 2 },
-                    format: { with: VALID_MONTHDAY_REGEX }
-  validates :year, presence: true, length: { is: 4 },
-                    format: { with: VALID_YEAR_REGEX }
+  validates :birth_month, presence: true, length: { maximum: 2 },
+            format: { with: VALID_MONTHDAY_REGEX,
+            message: "Client's Birth Month, 1 - 12" }
+  validates :birth_day, presence: true, length: { maximum: 2 },
+            format: { with: VALID_MONTHDAY_REGEX,
+            message: "Client's Birth Day, 1 - 31" }
+  validates :month, length: { maximum: 2 },
+            format: { with: VALID_MONTHDAY_REGEX,
+            message: "Start of report, assumes current month if blank" }
+  validates :day, length: { maximum: 2 },
+            format: { with: VALID_MONTHDAY_REGEX,
+            message: "Start of report, assumes today if blank" }
+  validates :year, length: { is: 4 },
+            format: { with: VALID_YEAR_REGEX,
+            message: "Start of report, assumes this year if blank" }
+  validates :length, length: { maximum: 2 },
+            format: { with: VALID_MONTHDAY_REGEX,
+            message: "Number of periods to cover in report, 1 - 99" }
 
-  def self.periods(yr, mnth, dy)
+  def self.periods(bmnth, bday, yr, mnth, dy, lnth)
 
     require 'date'
 
-    startdate = Date.new(yr.to_i, mnth.to_i, dy.to_i)
-    return(periods_from(startdate))
+    startdate = startdateprocessor(yr, mnth, dy)
+    birthdate = birthdateprocessor(bmnth, bday, startdate)
+    length = lengthprocessor(lnth)
+    return(periods_from(startdate, birthdate, length))
   end
+
+private
 
   def self.has_leapday?(time_pt)
     # Takes a date as input, determines if there is a leap day included
@@ -38,29 +55,159 @@ class Rosecrucian
     end
   end
 
-  def self.periods_from(this_pt_in_time)
+  def self.periods_from(this_pt_in_time, birthdate, numberofperiods)
     # Takes a date as input, divides the ensuing year into 7 equal parts
     # and prints to standard out the list of start and end dates of each.
 
-    thelist = {}
+    thelist = []
     therange = ""
-    period = 1
+    period = period_of(this_pt_in_time, birthdate)
+    timepoint = period_start_date(birthdate, period)
+    iteration = 1
 
-    until period > 7 do
-      therange = "#{this_pt_in_time} - "
+    until iteration > numberofperiods do
+      therange = "Period #{period}:   #{timepoint} - "
       if period == 7
-        this_pt_in_time += 52
+        timepoint += 52
       else
-        this_pt_in_time += 51
+        timepoint += 51
       end
-      if has_leapday?(this_pt_in_time)
-        this_pt_in_time += 1
+      if has_leapday?(timepoint)
+        timepoint += 1
       end
-      therange << "#{this_pt_in_time}"
-      thelist["#{period}"] = therange
+      therange << "#{timepoint}"
+      thelist["#{iteration}".to_i] = therange
       period += 1
-      this_pt_in_time += 1
+      if period > 7
+        period = 1
+      end
+      iteration += 1
+      timepoint += 1
     end
     return(thelist)
   end
+
+  def self.period_start_date(bd, p)
+    # Given a start date (bd) and which of 7 periods to look at (p),
+    # returns a valid start date object for that period.
+
+    period = 1
+
+    if p == 1
+      return(bd)
+    end
+
+    startdate = bd 
+    if has_leapday?(startdate)
+      endate = startdate + 52
+    else
+      endate = startdate + 51
+    end
+
+    until (period == p) do
+      period += 1
+      startdate = endate + 1
+      if has_leapday?(startdate)
+        endate = startdate + 52
+      else
+        endate = startdate + 51
+      end
+    end
+
+    return(startdate)
+  end 
+
+  def self.period_of(this_pt_in_time, birthdate)
+    # Determines which of the 7 periods (starting at birthdate)
+    # this_pt_in_time falls within.
+    # Returns the period as an integer.
+
+    period = 1
+
+    if this_pt_in_time == birthdate
+      return(period)
+    end
+    
+    startdate = birthdate
+    if has_leapday?(startdate)
+      endate = startdate += 52
+    else
+      endate = startdate += 51
+    end
+
+    until ((this_pt_in_time >= startdate) && (this_pt_in_time < endate)) do
+      period += 1
+      if period > 7
+        period = 1
+      end
+
+      startdate = endate
+      if has_leapday?(startdate)
+        endate += 52
+      else
+        endate += 51
+      end
+
+      if period == 7
+        endate += 1
+      end
+    end
+
+    return(period)
+  end
+
+  def self.startdateprocessor(year, month, day)
+    # Determines proper values for year, month and day (if blank).
+    # Returns a proper date object.
+
+    date = Time.new
+
+    if year.blank? 
+      y = date.year
+    else
+      y = year.to_i
+    end
+
+    if month.blank?
+      m = date.month
+    else
+      m = month.to_i
+    end
+
+    if day.blank?
+      d = date.day
+    else
+      d = day.to_i
+    end
+
+    return(Date.new(y, m, d))
+  end
+
+  def self.birthdateprocessor(month, day, startdate)
+    # Determines proper value for year, based on current day and start date.
+    # Returns a proper date object.
+
+    date = startdate
+
+    if month.to_i > date.month
+      year = date.year.to_i - 1
+    else
+      year = date.year.to_i
+    end
+
+    return Date.new(year, month.to_i, day.to_i)
+  end
+
+  def self.lengthprocessor(length)
+    # Returns integer, default value 7 periods (1 year) if length is blank.
+
+    if length.blank?
+      l = 7 
+    else
+      l = length.to_i
+    end
+
+    return(l)
+  end
+
 end

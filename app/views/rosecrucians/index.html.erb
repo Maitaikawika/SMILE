@@ -1,24 +1,31 @@
-<div class="center jumbotron">
+<div class= "center jumbotron">
   <h1>Rosecrucian Annual Period Calculator</h1>
-  <p> Enter the birth month, birth day and year of interest in the 
-      fields below.</p>
   <br>
-  <%= form_for @rosecrucian do |f| %>
-    <%= f.label :month %>
-    <%= f.text_field :month %>
+  <%= bootstrap_form_for(@rosecrucian, layout: :horizontal) do |f| %>
 
-    <%= f.label :day %>
-    <%= f.text_field :day %>
+    <p> Enter the client's birth month and day
+        in the fields below (Required).</p>
 
-    <%= f.label :year %>
-    <%= f.text_field :year %>
+    <%= f.text_field :birth_month, label: "Client's Birth Month (MM): " %>
 
-    <%= f.submit %>
+    <%= f.text_field :birth_day, label: "Client's Birth Day (DD): " %>
+
+    <br><br><p> Enter the report effective month/day/year
+                and length below<br>(Optional - Default values
+                are today's date and 7 periods).</p>
+
+    <%= f.text_field :month, label: "Report Start Month (MM): " %>
+
+    <%= f.text_field :day, label: "Report Start Day (DD): " %>
+
+    <%= f.text_field :year, label: "Report Start Year (YYYY): " %>
+
+    <%= f.text_field :length, label: "Report Length (Number of Periods, 1-99): " %>
+
+    <br><br>
+
+    <%= f.submit "Create Rosecrucian Report" %>
   <% end %>
-  <br><br>
-  <p> Enter the data in the following form: Numeric only, MM for Month, DD 
-      for Day, and YYYY for Year, where MM is in the range of 01 - 12, 
-      DD is in the range of 01 - 31, and YYYY is any valid 4 digit year. </p>
   <br><br>
   <%= image_tag("SMILE.jpg", alt: "Smiley Face") %>
 </div>

@@ -9,10 +9,13 @@ class RosecruciansController < ApplicationController
 
   def create
     @rosecrucian = Rosecrucian.new(params[:rosecrucian])
-    year = params[:rosecrucian][:year]
+    birth_month = params[:rosecrucian][:birth_month]
+    birth_day = params[:rosecrucian][:birth_day]
     month = params[:rosecrucian][:month]
     day = params[:rosecrucian][:day]
-    @roseperiods = Rosecrucian.periods(year, month, day)
+    year = params[:rosecrucian][:year]
+    length = params[:rosecrucian][:length]
+    @roseperiods = Rosecrucian.periods(birth_month, birth_day, year, month, day, length)
   end
 
   def show

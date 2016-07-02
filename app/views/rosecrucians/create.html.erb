@@ -1,16 +1,14 @@
 
 <div class="center jumbotron">
   <h1>Rosecrucian Annual Period Report</h1>
-  <h2>You entered the following:</h2>
-  <p>Month: <%= @rosecrucian.month %>, Day: <%= @rosecrucian.day %>, Year: <%= @rosecrucian.year %> </p><br>
-  <h2>The resulting 7 periods are:</h2>
   <div class="rosereport">
     <table class="rosetable">
-      <% @roseperiods.each do |period,daterange| %>
-        <tr>
-          <td><%= "Period #{period}" %></td>
-          <td><%= "#{daterange}" %></td>
-        </tr>
+      <% @roseperiods.each do |period| %>
+        <% if !period.nil? %>
+          <tr>
+            <td><%= "#{period}" %></td>
+          </tr>
+        <% end %>
       <% end -%>
     </table>
   </div>
