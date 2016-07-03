@@ -1,3 +1,18 @@
 // Place all the styles related to the numerology controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.numreport {
+  margin: 30px auto 30px auto;
+  width: 300px;
+  max-width: 300px;
+}
+
+.numtable {
+  border-spacing: 10px;
+  width: 300px;
+}
+
+.numtable td {
+  padding: 10px;
+}

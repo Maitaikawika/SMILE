@@ -1,0 +1,32 @@
+<div class= "center jumbotron">
+  <h1>Rosecrucian Annual Period Calculator</h1>
+  <br>
+  <%= bootstrap_form_for(@rosecrucian, layout: :horizontal) do |f| %>
+
+    <p> Enter the client's birth month and day
+        in the fields below (Required).</p>
+
+    <%= f.text_field :birth_month, label: "Client's Birth Month (MM): " %>
+
+    <%= f.text_field :birth_day, label: "Client's Birth Day (DD): " %>
+
+    <br><br><p> Enter the report effective month/day/year
+                and length below<br>(Optional - Default values
+                are today's date and 7 periods).</p>
+
+    <%= f.text_field :month, label: "Report Start Month (MM): " %>
+
+    <%= f.text_field :day, label: "Report Start Day (DD): " %>
+
+    <%= f.text_field :year, label: "Report Start Year (YYYY): " %>
+
+    <%= f.text_field :length, label: "Report Length (Number of Periods, 1-99): " %>
+
+    <br><br>
+
+    <%= f.submit "Create Rosecrucian Report" %>
+  <% end %>
+  <br><br>
+  <%= image_tag("SMILE.jpg", alt: "Smiley Face") %>
+</div>
+
