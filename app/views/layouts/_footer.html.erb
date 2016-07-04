@@ -2,11 +2,13 @@
   <small>
     Developed by David Herring, &copy; Copyright 2005 - 2016
   </small>
-  <nav>
-    <ul>
-      <li><%= link_to "Help",   help_path %></li>
-      <li><%= link_to "About",   about_path %></li>
-    </ul>
-  </nav>
+    <% if user_signed_in? %>
+      <nav>
+        <ul>
+          <li><%= link_to "Help",   help_path %></li>
+          <li><%= link_to "About",   about_path %></li>
+        </ul>
+      </nav>
+    <% end %>
 </footer>
 

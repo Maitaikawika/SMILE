@@ -1,4 +1,6 @@
 class NumerologiesController < ApplicationController
+  before_filter :authenticate_user!
+
   def new
     @numerology = Numerology.new
   end
