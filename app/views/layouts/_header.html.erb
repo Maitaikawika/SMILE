@@ -8,6 +8,7 @@
           <li><%= link_to "Rosecrucian Module",   rosecrucians_path %></li>
           <li><%= link_to "Numerology Module", numerologies_path %></li>
           <li><%= gravatar_for current_user %></li>
+          <li><%= link_to "Edit Profile", edit_user_registration_path %></li>
           <li> <%= link_to('Logout', destroy_user_session_path, :method => :delete) %> </li>
         </ul>
       </nav>

@@ -1,12 +1,9 @@
 class Numerology
   include ActiveModel::Model
+  include ActiveModel::Validations
   attr_accessor  :phrase
 
-  VALID_PHRASE_REGEX = /\A[a-zA-Z0-9\s]+\z/
-
-  validates :phrase, presence: true, length: { minimum: 1 },
-            format: { with: VALID_PHRASE_REGEX,
-            message: "Text to numerically analyze" }
+  validates :phrase, :presence => { :message => "Cannot be blank" }
 
   def self.analysis(phrase)
     # Master function of script, takes as input a string, leverages
@@ -18,6 +15,12 @@ class Numerology
     index = 1
 
     words = clean(phrase).split()
+
+    if words.blank?
+      results[index] = "Nothing to calculate. Make sure you entered a word or phrase that includes alphanumeric characters A-Z, a-z and 0-9."
+      return(results)
+    end
+
     words.each { |w|
       wrdnum = reduce(convert(w))
       results[index] =  "The word \"#{w}\" is a #{wrdnum}."

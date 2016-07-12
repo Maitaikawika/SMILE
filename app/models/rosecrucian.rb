@@ -2,28 +2,8 @@ class Rosecrucian
   include ActiveModel::Model
   attr_accessor :birth_month, :birth_day, :month, :day, :year, :length
 
-  VALID_NAME_REGEX = /\A[a-zA-Z\s]+\z/
-  VALID_MONTHDAY_REGEX = /\A([1-9]|1[0-2])\z/
-  VALID_YEAR_REGEX = /[0-9]{4}/
-
-  validates :birth_month, presence: true, length: { maximum: 2 },
-            format: { with: VALID_MONTHDAY_REGEX,
-            message: "Client's Birth Month, 1 - 12" }
-  validates :birth_day, presence: true, length: { maximum: 2 },
-            format: { with: VALID_MONTHDAY_REGEX,
-            message: "Client's Birth Day, 1 - 31" }
-  validates :month, length: { maximum: 2 },
-            format: { with: VALID_MONTHDAY_REGEX,
-            message: "Start of report, assumes current month if blank" }
-  validates :day, length: { maximum: 2 },
-            format: { with: VALID_MONTHDAY_REGEX,
-            message: "Start of report, assumes today if blank" }
-  validates :year, length: { is: 4 },
-            format: { with: VALID_YEAR_REGEX,
-            message: "Start of report, assumes this year if blank" }
-  validates :length, length: { maximum: 2 },
-            format: { with: VALID_MONTHDAY_REGEX,
-            message: "Number of periods to cover in report, 1 - 99" }
+  validates :birth_month, :presence => { :message => "Cannot be blank" }
+  validates :birth_day, :presence => { :message => "Cannot be blank" }
 
   def self.periods(bmnth, bday, yr, mnth, dy, lnth)
 
