@@ -15,6 +15,7 @@ gem 'bcrypt', '~> 3.1.11'
 gem 'devise'
 gem 'puma'
 gem 'activerecord-session_store'
+gem 'sqlite3'
 
 group :development do
   gem 'web-console', '~> 2.0'
@@ -24,7 +25,6 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false
-  gem 'sqlite3'
   gem 'dawnscanner', :require=>false
   gem 'brakeman', :require=>false
 end
@@ -33,6 +33,7 @@ group :development, :test do
   gem 'byebug'
 end
 
-# group :production do
-#  gem 'pg'
-# end
+group :production do
+ #gem 'pg'
+ gem 'mysql2'
+end
