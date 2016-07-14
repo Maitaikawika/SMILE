@@ -28,4 +28,4 @@ production:
   pool: 5
   username: root
   password: <%= ENV['PDB'] %>
-  socket: /tmp/mysql.sock
+  socket: /var/run/mysqld/mysqld.sock
