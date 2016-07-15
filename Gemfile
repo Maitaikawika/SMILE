@@ -16,7 +16,6 @@ gem 'devise'
 gem 'puma'
 gem 'activerecord-session_store'
 gem 'sqlite3'
-gem 'figaro'
 
 group :development do
   gem 'web-console', '~> 2.0'
