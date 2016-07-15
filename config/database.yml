@@ -27,7 +27,7 @@ production:
   database: apps_smile_production
   pool: 5
   username: root
-  password: <%= ENV['PDB'] %>
-  host: 127.0.0.1
+  password: <%= ENV["PDB"] %>
+  host: localhost
   port: 3306
-  #socket: /var/run/mysqld/mysqld.sock
+  socket: /var/run/mysqld/mysqld.sock
