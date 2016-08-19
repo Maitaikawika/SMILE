@@ -24,11 +24,13 @@ private
     # If the year component is a leap year and month/day component is
     # greater than Jan 7 but less than Mar 1, then return true -- a leap
     # day falls within the 52 day period of this date.
+
+    tmpt = time_pt
   
-    jan7 = Date.new(time_pt.year,1,7)
-    mar1 = Date.new(time_pt.year,3,1)
+    jan7 = Date.new(tmpt.year,1,7)
+    mar1 = Date.new(tmpt.year,3,1)
   
-    if time_pt.leap? && (time_pt > jan7 && time_pt < mar1)
+    if tmpt.leap? && (tmpt > jan7 && tmpt < mar1)
       return true
     else
       return false
@@ -77,24 +79,24 @@ private
       return(bd)
     end
 
-    startdate = bd 
-    if has_leapday?(startdate)
-      endate = startdate + 52
+    strtdate = bd 
+    if has_leapday?(strtdate)
+      endate = strtdate + 52
     else
-      endate = startdate + 51
+      endate = strtdate + 51
     end
 
     until (period == p) do
       period += 1
-      startdate = endate + 1
-      if has_leapday?(startdate)
-        endate = startdate + 52
+      strtdate = endate + 1
+      if has_leapday?(strtdate)
+        endate = strtdate + 52
       else
-        endate = startdate + 51
+        endate = strtdate + 51
       end
     end
 
-    return(startdate)
+    return(strtdate)
   end 
 
   def self.period_of(this_pt_in_time, birthdate)
@@ -108,21 +110,21 @@ private
       return(period)
     end
     
-    startdate = birthdate
-    if has_leapday?(startdate)
-      endate = startdate += 52
+    sdate = birthdate
+    if has_leapday?(sdate)
+      endate = sdate + 52
     else
-      endate = startdate += 51
+      endate = sdate + 51
     end
 
-    until ((this_pt_in_time >= startdate) && (this_pt_in_time < endate)) do
+    until ((this_pt_in_time >= sdate) && (this_pt_in_time < endate)) do
       period += 1
       if period > 7
         period = 1
       end
 
-      startdate = endate
-      if has_leapday?(startdate)
+      sdate = endate
+      if has_leapday?(sdate)
         endate += 52
       else
         endate += 51
